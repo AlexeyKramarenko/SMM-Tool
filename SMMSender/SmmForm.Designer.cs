@@ -41,7 +41,7 @@
             this.lbІSubject = new System.Windows.Forms.Label();
             this.rtbSubject = new System.Windows.Forms.RichTextBox();
             this.btnSend = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel = new System.Windows.Forms.Panel();
             this.lblUploadedExcelFileSuccess = new System.Windows.Forms.Label();
             this.btnLoadExcel = new System.Windows.Forms.Button();
             this.lblPassword = new System.Windows.Forms.Label();
@@ -49,7 +49,7 @@
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.txtFromAddress = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbUploadedImage)).BeginInit();
-            this.panel1.SuspendLayout();
+            this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // chbTelegram
@@ -174,22 +174,22 @@
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
-            // panel1
+            // panel
             // 
-            this.panel1.Controls.Add(this.lblUploadedExcelFileSuccess);
-            this.panel1.Controls.Add(this.btnLoadExcel);
-            this.panel1.Controls.Add(this.lblPassword);
-            this.panel1.Controls.Add(this.txtName);
-            this.panel1.Controls.Add(this.txtPassword);
-            this.panel1.Controls.Add(this.txtFromAddress);
-            this.panel1.Controls.Add(this.lbSenderEmail);
-            this.panel1.Controls.Add(this.lbSenderName);
-            this.panel1.Controls.Add(this.rtbSubject);
-            this.panel1.Controls.Add(this.lbІSubject);
-            this.panel1.Location = new System.Drawing.Point(42, 554);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(666, 245);
-            this.panel1.TabIndex = 16;
+            this.panel.Controls.Add(this.lblUploadedExcelFileSuccess);
+            this.panel.Controls.Add(this.btnLoadExcel);
+            this.panel.Controls.Add(this.lblPassword);
+            this.panel.Controls.Add(this.txtName);
+            this.panel.Controls.Add(this.txtPassword);
+            this.panel.Controls.Add(this.txtFromAddress);
+            this.panel.Controls.Add(this.lbSenderEmail);
+            this.panel.Controls.Add(this.lbSenderName);
+            this.panel.Controls.Add(this.rtbSubject);
+            this.panel.Controls.Add(this.lbІSubject);
+            this.panel.Location = new System.Drawing.Point(42, 554);
+            this.panel.Name = "panel";
+            this.panel.Size = new System.Drawing.Size(666, 245);
+            this.panel.TabIndex = 16;
             // 
             // lblUploadedExcelFileSuccess
             // 
@@ -245,7 +245,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(732, 903);
             this.Controls.Add(this.rtbContent);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panel);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.btnLoadPicture);
             this.Controls.Add(this.chbMail);
@@ -257,8 +257,8 @@
             this.Name = "SmmForm";
             this.Text = "SmmSender";
             ((System.ComponentModel.ISupportInitialize)(this.pbUploadedImage)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.panel.ResumeLayout(false);
+            this.panel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -279,7 +279,7 @@
         private Label lbІSubject;
         private Label lbSenderEmail;
         private Label lbSenderName;
-        private Panel panel1;
+        private Panel panel;
         private TextBox txtPassword;
         private TextBox txtFromAddress;
         private Label lblPassword;

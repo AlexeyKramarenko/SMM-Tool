@@ -7,7 +7,7 @@
         public const string Xls = ".xls";
         public const string Xlsx = ".xlsx";
 
-        public static List<string> GetList()
+        public static IEnumerable<string> GetList()
            => new List<string> { Jpeg, Jpg, Xls, Xlsx };
     }
 }

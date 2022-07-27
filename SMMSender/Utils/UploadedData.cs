@@ -1,13 +1,14 @@
 ﻿using IronXL;
 using SMMSender.Constants;
+using SMMSender.Utils.Extensions;
 
 namespace SMMSender.Utils
 {
     public static class UploadedData
     {
-        public const string FolderPath = "C:\\Users";
-        public const string FileName = "UploadedFile";
 
+        public const string FolderPath = "C:\\Users";
+        public const string FileName = "UploadedFile"; 
         public static readonly string JpgFile = Path.Combine(FolderPath, string.Concat(FileName, FileExtensions.Jpg));
         public static readonly string XlsFile = Path.Combine(FolderPath, string.Concat(FileName, FileExtensions.Xls));
 
@@ -22,17 +23,22 @@ namespace SMMSender.Utils
                             .Select(a => a.Text);
         }
 
+
         public static void RemoveAllUploadedFiles() =>
             FileExtensions
                 .GetList()
-                .ForEach(ext =>
-                {
-                    var path = Path.Combine(FolderPath, string.Concat(FileName, ext));
+                .ForEach(ext => RemoveFile(ext));
 
-                    if (File.Exists(path))
-                    {
-                        File.Delete(path);
-                    }
-                });
+
+        private static void RemoveFile(string ext)
+        {
+            var path = Path.Combine(FolderPath, string.Concat(FileName, ext));
+
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
     }
 }

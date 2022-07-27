@@ -5,25 +5,21 @@ namespace SMMSender.Constants
 {
     public class ViberControlsCoords
     {
-        private readonly WinApiWrapper _winApi;
-        private readonly IntPtr _hwnd;
 
-        public POINT FirstChat { get; private set; }
-        public POINT UploadImageBtn { get; private set; }
-        public POINT TextContent { get; private set; }
+        public POINT FirstChat { get; }
+        public POINT UploadImageBtn { get; }
+        public POINT TextContent { get; }
 
-        public ViberControlsCoords(WinApiWrapper winApi, IntPtr hwnd)
+        public ViberControlsCoords(IntPtr hwnd)
         {
-            _winApi = winApi;
-            _hwnd = hwnd;
-            InitControls();
-        }
+            if (hwnd == IntPtr.Zero)
+                throw new ArgumentException($"Argument '{nameof(hwnd)}' should have value, that cannot be Zero.");
 
-        private void InitControls()
-        {
+            var winApi = new WinApiWrapper();
             FirstChat = new POINT(100, 170);
-            UploadImageBtn = new POINT(415, _winApi.GetWindowBottomY(_hwnd) - 40);
-            TextContent = new POINT(800, _winApi.GetWindowBottomY(_hwnd) - 200);
+            UploadImageBtn = new POINT(415, winApi.GetWindowBottomY(hwnd) - 40);
+            TextContent = new POINT(800, winApi.GetWindowBottomY(hwnd) - 200);
         }
+
     }
 }

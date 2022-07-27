@@ -14,8 +14,8 @@
             Name = name;
         }
 
-        public static WindowClass Telegram = new WindowClass("Qt5154QWindowIcon");
-        public static WindowClass Viber = new WindowClass("Qt624QWindowOwnDCIcon");
-        public static WindowClass OpenFileDialog = new WindowClass("#32770 (Dialog)");
+        public static WindowClass Telegram { get; } = new WindowClass("Qt5154QWindowIcon");
+        public static WindowClass Viber { get; } = new WindowClass("Qt624QWindowOwnDCIcon");
+        public static WindowClass OpenFileDialog { get; } = new WindowClass("#32770 (Dialog)");
     }
 }

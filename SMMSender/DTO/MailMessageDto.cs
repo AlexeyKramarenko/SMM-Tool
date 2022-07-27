@@ -2,6 +2,7 @@
 {
     public class MailMessageDto
     {
+
         public MailMessageDto(
             string fromAddress,
             string password,
@@ -25,5 +26,6 @@
         public string Subject { get; }
         public string Body { get; }
         public IEnumerable<string> Addresses { get; }
+
     }
 }

@@ -1,10 +1,9 @@
 ﻿using SMMSender.DTO;
-using SMMSender.Processors;
-using SMMSender.Utils;
+using SMMSender.Utils.Extensions;
 using System.Net;
 using System.Net.Mail;
 
-namespace SMMSender.Processor
+namespace SMMSender.Processors.Implementations
 {
     internal class EmailProcessor : IProcessor
     {
@@ -17,10 +16,9 @@ namespace SMMSender.Processor
 
         public void Send() =>
             CreateMessages()
-                .ForEach(msg => 
+                .ForEach(msg =>
                            msg.Use((msg) => CreateSmtpClient()
-                                                       .Send(msg)));
-
+                                                       .Send(msg))); 
 
         #region Private Methods
 
@@ -32,8 +30,8 @@ namespace SMMSender.Processor
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential( 
-                                            _messageDto.FromAddress, 
+                Credentials = new NetworkCredential(
+                                            _messageDto.FromAddress,
                                             _messageDto.Password)
             };
 

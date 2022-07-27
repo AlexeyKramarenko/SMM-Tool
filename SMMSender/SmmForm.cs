@@ -1,9 +1,10 @@
 using SMMSender.Constants;
 using SMMSender.DTO;
 using SMMSender.Factories;
+using SMMSender.Factories.Implementations;
 using SMMSender.Processors;
 using SMMSender.Utils;
-using SMMSender.Utils.WindowsApi;
+using SMMSender.Utils.Extensions;
 
 namespace SMMSender
 {
@@ -17,6 +18,8 @@ namespace SMMSender
             HideEmailForm();
             UploadedData.RemoveAllUploadedFiles();
         }
+
+        #region Event Handlers
 
         private void btnLoadPicture_Click(object sender, EventArgs e) =>
             AddFileUsingDialog(
@@ -36,9 +39,9 @@ namespace SMMSender
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            ValidateForm();
-            var factory = new ProcessorFactories(new WinApiWrapper(), GetFormDto());
-            RunCheckedProcessors(factory);
+            var errors = GetErrorList();
+            DisplayErrors(errors);
+            RunCheckedProcessors(new ProcessorFactories());
         }
 
         private void chbMail_CheckedChanged(object sender, EventArgs e) =>
@@ -46,8 +49,27 @@ namespace SMMSender
                               .Then(() => DisplyEmailForm())
                               .Else(() => HideEmailForm());
 
+        #endregion
 
-        private void ValidateForm()
+        #region Private Methods
+
+        private void DisplayErrors(IEnumerable<string> errors)
+        {
+            if (errors is null)
+                throw new ArgumentNullException(nameof(errors));
+
+            if (!errors.Any())
+                return;
+
+            var message = string.Concat(errors);
+
+            if (!string.IsNullOrEmpty(message))
+            {
+                MessageBox.Show(message);
+            }
+        }
+
+        private IEnumerable<string> GetErrorList()
         {
             var commonForm = new List<(bool condition, string error)>
             {
@@ -71,13 +93,7 @@ namespace SMMSender
             var errors = fieldsToValidate
                             .Where(a => a.Item1)
                             .Select(a => $"{a.Item2}{Environment.NewLine}");
-
-            var message = string.Concat(errors);
-
-            if (!string.IsNullOrEmpty(message))
-            {
-                MessageBox.Show(message);
-            }
+            return errors;
         }
 
         private void RunCheckedProcessors(IProcessorFactories factory)
@@ -93,7 +109,6 @@ namespace SMMSender
             processors
                  .Where(i => i.Key.Checked)
                  .Select(i => i.Value())
-                 .ToList()
                  .ForEach(processor => processor.Send());
         }
 
@@ -122,13 +137,13 @@ namespace SMMSender
         private void HideEmailForm()
         {
             Size = new Size(this.Size.Width, 650);
-            panel1.Visible = false;
+            panel.Visible = false;
         }
 
         private void DisplyEmailForm()
         {
             Size = new Size(this.Size.Width, 950);
-            panel1.Visible = true;
+            panel.Visible = true;
         }
 
         private void PlaceInTheCenter()
@@ -137,11 +152,6 @@ namespace SMMSender
             this.Top = 0;
         }
 
-        private FormDto GetFormDto() =>
-           new FormDto(
-               body: rtbContent.Text,
-               imagePath: UploadedData.JpgFile);
-
         private MailMessageDto GetMessageDto() =>
            new MailMessageDto(
                txtFromAddress.Text,
@@ -149,5 +159,12 @@ namespace SMMSender
                rtbSubject.Text,
                rtbContent.Text,
                UploadedData.GetEmailListFromXls());
+
+        #endregion
+
+        public FormDto GetFormDto() =>
+           new FormDto(
+               body: rtbContent.Text,
+               imagePath: UploadedData.JpgFile);
     }
 }

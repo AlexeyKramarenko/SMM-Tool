@@ -3,7 +3,7 @@ using SMMSender.Constants;
 using SMMSender.Utils.WindowsApi;
 using System.Diagnostics;
 
-namespace SMMSender.Processors
+namespace SMMSender.Processors.Implementations
 {
     internal class DesktopAppProcessorBase
     {
@@ -13,7 +13,7 @@ namespace SMMSender.Processors
             Process
                 .GetProcessesByName(dto.ProcessName)
                 .ToList()
-                .ForEach(p => p.Close()); 
+                .ForEach(p => p.Close());
 
             Thread.Sleep(2000);
 
@@ -26,14 +26,14 @@ namespace SMMSender.Processors
         }
 
 
-        protected void InitHandler(WindowClass windowClass, out IntPtr windowHandler)
+        protected IntPtr InitHandler(WindowClass windowClass)
         {
-            windowHandler = WinApi.FindWindowA(windowClass.Name, null);
+            IntPtr windowHandler = WinApi.FindWindowA(windowClass.Name, null);
 
             if (windowHandler == IntPtr.Zero)
-            {
                 throw new InvalidOperationException($"Not found program with class name \"{windowClass.Name}\"");
-            }
+
+            return windowHandler;
         }
 
     }
