@@ -44,6 +44,7 @@ namespace SMMSender
             RunCheckedProcessors(new ProcessorFactories());
         }
 
+
         private void chbMail_CheckedChanged(object sender, EventArgs e) =>
             ((CheckBox)sender).Checked
                               .Then(() => DisplyEmailForm())

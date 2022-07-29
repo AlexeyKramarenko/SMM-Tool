@@ -18,7 +18,7 @@ namespace SMMSender.Processors.Implementations
             CreateMessages()
                 .ForEach(msg =>
                            msg.Use((msg) => CreateSmtpClient()
-                                                       .Send(msg))); 
+                                                       .Send(msg)));
 
         #region Private Methods
 
@@ -35,7 +35,7 @@ namespace SMMSender.Processors.Implementations
                                             _messageDto.Password)
             };
 
-        private List<MailMessage> CreateMessages() =>
+        private IEnumerable<MailMessage> CreateMessages() =>
             _messageDto
                .Addresses
                .Select(toAddress =>
@@ -43,7 +43,7 @@ namespace SMMSender.Processors.Implementations
                               _messageDto.FromAddress,
                               toAddress,
                               _messageDto.Subject,
-                              _messageDto.Body)).ToList();
+                              _messageDto.Body));
 
         #endregion
 

@@ -7,11 +7,12 @@ using SMMSender.Utils.WindowsApi;
 using SMMSender.Utils.Extensions;
 using static SMMSender.Utils.WindowsApi.WinApi;
 using SMMSender.Factories;
+using SMMSender.Utils.Optional;
+using SMMSender.Processors.Implementations.FacebookDTO;
 
 namespace SMMSender.Processors.Implementations
 {
-
-    internal class FacebookProcessor : DesktopAppProcessorBase, IProcessor
+    internal partial class FacebookProcessor : DesktopAppProcessorBase, IProcessor
     {
 
         private readonly IFacebookDependenciesFactory _factory;
@@ -30,58 +31,95 @@ namespace SMMSender.Processors.Implementations
 
             IntPtr hwnd = InitHandler(WindowClass.OpenFileDialog);
 
-            OpenPage(driver);
-            CreateArticleClick(driver, wait);
-            CheckInstagramCheckBox(driver, wait);
-            AddTextContent(driver, wait, formDto);
-            AddImage(driver, wait, winApi, hwnd);
-            ClickSendBtn();
+            OpenPage(driver, "www.facebook.com/***/publishing_tools/");
+
+            IResult result =
+                CreateArticleClick(driver, wait)
+                    .Map(_ => CheckInstagramCheckBox(driver, wait)
+                        .Map(_ => AddTextContent(driver, wait, formDto)
+                            .Map(_ => AddImage(driver, wait, winApi, hwnd)
+                                .Map(ok => (IResult)ok)
+                                .Reduce(err => err))
+                            .Reduce(err => err))
+                        .Reduce(err => err))
+                    .Reduce(err => err);
         }
 
         #region Private Methods
 
-        private void OpenPage(
-                        IWebDriver driver,
-                        string url = "www.facebook.com/ic.misto/publishing_tools/") =>
-            driver
-                .Navigate()
-                .GoToUrl(url);
+        private void OpenPage(IWebDriver driver, string url) =>
+            driver.Navigate().GoToUrl(url);
 
-
-        private void CreateArticleClick(IWebDriver driver, WebDriverWait wait)
+        private Either<NotFound, Ok> CreateArticleClick(
+                                                IWebDriver driver,
+                                                WebDriverWait wait)
         {
-            IWebElement? btn =
+            IWebElement btn =
                 wait.Until(d => driver.FindElements(FacebookElementsCoords.ArticleBtn)
-                                      .FirstOrDefault());
+                    .FirstOrNone())
+                    .Map(btn => btn)
+                    .Reduce(() => new NoWebElement());
+
             btn.Click();
+
+            return (btn is NoWebElement)
+                ? new NotFound("Article button is not found.")
+                : new Ok();
         }
 
-        private void CheckInstagramCheckBox(IWebDriver driver, WebDriverWait wait)
+        private Either<NotFound, Ok> CheckInstagramCheckBox(
+                                                IWebDriver driver,
+                                                WebDriverWait wait)
         {
-            IWebElement? chkBox =
+            IWebElement chkBox =
                 wait.Until(d => driver.FindElements(FacebookElementsCoords.InstagramCheckBox)
-                                      .FirstOrDefault());
+                    .FirstOrNone())
+                    .Map(btn => btn)
+                    .Reduce(() => new NoWebElement());
+
             chkBox.Click();
+
+            return (chkBox is NoWebElement)
+                ? new NotFound("Checkbox is not found.")
+                : new Ok();
         }
 
-        private void AddTextContent(IWebDriver driver, WebDriverWait wait, FormDto form)
+        private Either<NotFound, Ok> AddTextContent(
+                                            IWebDriver driver,
+                                            WebDriverWait wait,
+                                            FormDto form)
         {
-            IWebElement? textBox =
+            IWebElement textBox =
                 wait.Until(d => driver.FindElements(FacebookElementsCoords.TextField)
-                                      .FirstOrDefault());
+                    .FirstOrNone())
+                    .Map(txt => txt)
+                    .Reduce(() => new NoWebElement());
+
             textBox.Clear();
             textBox.SendKeys(form.Body);
+
+            return (textBox is NoWebElement)
+                ? new NotFound("TextBox is not found.")
+                : new Ok();
         }
 
-        private void AddImage(
-                        IWebDriver driver,
-                        WebDriverWait wait,
-                        WinApiWrapper winApi,
-                        IntPtr hwnd)
+        private Either<NotFound, Ok> AddImage(
+                                        IWebDriver driver,
+                                        WebDriverWait wait,
+                                        WinApiWrapper winApi,
+                                        IntPtr hwnd)
         {
-            IWebElement? image =
+            IWebElement image =
                 wait.Until(d => driver.FindElements(FacebookElementsCoords.Image)
-                                      .FirstOrDefault());
+                    .FirstOrNone())
+                    .Map(img => img)
+                    .Reduce(() => new NoWebElement());
+
+            if (image is NoWebElement)
+            {
+                return new NotFound("Image button is not found.");
+            }
+
             image.Click();
 
             winApi
@@ -99,13 +137,11 @@ namespace SMMSender.Processors.Implementations
                 .ForEach(_ => winApi
                               .SendKey(VirtualKeyStates.VK_TAB)
                               .Wait(100));
-        }
 
-        private void ClickSendBtn()
-        {
-            throw new NotImplementedException();
+            return new Ok();
         }
 
         #endregion 
+
     }
 }
