@@ -35,7 +35,7 @@ namespace SMMSender.Processors.Implementations
 
             IResult result =
                 CreateArticleClick(driver, wait)
-                    .Map(_ => CheckInstagramCheckBox(driver, wait)
+                    .Map(_ => CheckInstagram(driver, wait)
                         .Map(_ => AddTextContent(driver, wait, formDto)
                             .Map(_ => AddImage(driver, wait, winApi, hwnd)
                                 .Map(ok => (IResult)ok)
@@ -67,7 +67,7 @@ namespace SMMSender.Processors.Implementations
                 : new Ok();
         }
 
-        private Either<NotFound, Ok> CheckInstagramCheckBox(
+        private Either<NotFound, Ok> CheckInstagram(
                                                 IWebDriver driver,
                                                 WebDriverWait wait)
         {
